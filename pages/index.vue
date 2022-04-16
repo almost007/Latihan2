@@ -1,6 +1,8 @@
 <template>
   <div class="py-4">
-    <div class="container">
+    <div v-if="isLoading"><p class="text-center">Loading</p>
+    </div>
+    <div v-else class="container">
       <div
         class="title border-bottom d-flex align-items-center justify-content-between py-2"
       >
@@ -114,9 +116,42 @@ export default {
     CardItem,
   },
 
+      created() {
+        setTimeout (() => {
+          this.task = [
+        {
+          id:1,
+          title: "Validasi Masalah",
+          category: "Research",
+          description:
+            "Lakukan validasi masalah kepada target user minimal 30 untuk kategori B2C dan 5 untuk kategori B2B.",
+          isDone: false,
+        },
+        {
+          id:2,
+          title: "Membuat MVP",
+          category: "Product Development",
+          description: "Buat MVP sederhana berdasarkan permasalahan user",
+          isDone: false,
+        },
+        {
+          id:3,
+          title: "Testing MVP",
+          category: "Research",
+          description:
+            "Lakukan pengujian MVP kepada user dan minta feedback mereka.",
+          isDone: false,
+        },
+      ];
+      this.isLoading = false;
+
+        },3000 );
+      },
   data() {
     return {
       ok: true,
+      
+
 
       task: [
         {
@@ -147,6 +182,7 @@ export default {
       category: "",
       isCreating: false,
       isGrid: false,
+      isLoading: true,
     };
   },
 
