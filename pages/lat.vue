@@ -24,7 +24,7 @@
 <a v-on:click="doSomething"> onclick </a>,
 <a :href="url"> ... </a>
  v-bind:class="{ active: isActive }">style</div>
-<div : class="{active: isActive}">style</div> 
+<div : class="{active: isActive}">style</div>
 </div>
 </div>
 

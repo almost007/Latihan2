@@ -26,7 +26,7 @@
             <div class="description-task small text-muted">
               {{ task.description }}
             </div>
-
+            <input type="date" class="form-control form-control-sm" />
             </div>
           </div>
         </div>
@@ -34,6 +34,11 @@
 
 <script>
 export default {
+  methods: {
+shuffle() {
+this.tasks = _.shuffle(this.tasks)
+}
+},
 props: {
 task: Object,
 ok: false,

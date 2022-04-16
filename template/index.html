@@ -1,0 +1,194 @@
+<template>
+    <div class="py-4">
+      <div class="container">
+        <div
+          class="title border-bottom d-flex align-items-center justify-content-between py-2"
+        >
+          <h5>Task</h5>
+          <div class="d-flex align-items-center">
+            <div class="dropdown">
+              <select v-model="category">
+                <option value="Marketing">Marketing</option>
+                <option value="Research">Research</option>
+                <option value="Development">Product Development</option>
+              </select>
+            </div>
+            <!--  <b-dropdown id="dropdown-1" text="Category" class="m-md-2">
+      <b-dropdown-item
+      v-for="(item,i) in resultCategory"
+      :key="i"
+      @click="cat = item"
+      > {{item}} </b-dropdown-item>
+    </b-dropdown>
+  </div>
+  -->
+            &nbsp;&nbsp;
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search"
+              v-model="searchQuery"
+            />
+            <span class="me-2">View </span>
+            <button
+              class="btn btn-outline-secondary py-1 px-3"
+              @click="isGrid = !isGrid"
+            >
+              {{ isGrid ? "Grid" : "List" }}
+            </button>
+          </div>
+        </div>
+        <div class="list-task row">
+          <CardItem
+            v-for="(task, i) in resultQuery"
+            :key="i"
+            :task="task"
+            :isGrid="isGrid"
+            :ok="ok"
+          />
+        </div>
+  
+        <div class="action py-2">
+          <a
+            href="#"
+            class="add-button"
+            v-if="!isCreating"
+            @click="isCreating = !isCreating"
+            >Add Task</a
+          >
+          <div class="add-card" v-else>
+            <div class="card mb-2">
+              <div class="card-body d-flex flex-column p-0">
+                <input
+                  class="form-control border-0 mb-2"
+                  placeholder="Title"
+                  type="text"
+                />
+                <textarea
+                  class="form-control border-0 small"
+                  placeholder="Description"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+            <div class="button-wrapper d-flex">
+              <button class="btn btn-primary me-2">Save</button>
+              <button
+                class="btn btn-outline-secondary"
+                @click="isCreating = !isCreating"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+        <br />
+        <br />
+        <div v-if="ok == true">
+          <button @click="ok = !ok">Hide All Hidden</button>
+        </div>
+        <div v-if="ok == false">
+          <button @click="ok = !ok">Show All Hidden</button>
+        </div>
+        <p id="demo"></p>
+      </div>
+    </div>
+  </template>
+  <script>
+  import CardItem from "~/components/Card/CardItem.vue";
+  
+  export default {
+    components: {
+      CardItem,
+    },
+  
+    data() {
+      return {
+        ok: true,
+  
+        task: [
+          {
+            title: "Validasi Masalah",
+            category: "Research",
+            description:
+              "Lakukan validasi masalah kepada target user minimal 30 untuk kategori B2C dan 5 untuk kategori B2B.",
+            isDone: false,
+          },
+          {
+            title: "Membuat MVP",
+            category: "Product Development",
+            description: "Buat MVP sederhana berdasarkan permasalahan user",
+            isDone: false,
+          },
+          {
+            title: "Testing MVP",
+            category: "Research",
+            description:
+              "Lakukan pengujian MVP kepada user dan minta feedback mereka.",
+            isDone: false,
+          },
+        ],
+        searchQuery: "",
+        category: "",
+        isCreating: false,
+        isGrid: false,
+      };
+    },
+  
+    methods: {
+      PilihKategori: function () {
+        let x = document.getElementById("mySelect").value;
+        let katAll = false;
+        let katProyek = false;
+        let katResearch = false;
+        if (x == "All") {
+          katAll = true;
+          katProyek = true;
+          katResearch = true;
+        } else if (x == "Research") {
+          katAll = false;
+          katProyek = false;
+          katResearch = true;
+        } else if (x == "Development") {
+          katAll = false;
+          katProyek = true;
+          katResearch = false;
+        }
+        document.getElementById("demo").innerHTML =
+          "You selected: " + x + katAll + katProyek + katResearch;
+      },
+    },
+  
+    computed: {
+      resultQuery() {
+        if (this.category) {
+          return this.task.filter((item) => {
+            return this.category
+              .toLowerCase()
+              .split(" ")
+              .every((v) => item.category.toLowerCase().includes(v));
+          });
+        } else {
+          console.log(this.task);
+          return this.task;
+        }
+      },
+  
+      resultCategory() {
+        let a = this.task
+          .map((item) => item.category)
+          .filter((value, index, self) => self.indexOf(value) === index);
+        console.log(a);
+        return a;
+      },
+    },
+  
+    method: {},
+  };
+  </script>
+  <style>
+  .red {
+    color: blue;
+  }
+  </style>
+  

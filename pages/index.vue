@@ -5,17 +5,25 @@
         class="title border-bottom d-flex align-items-center justify-content-between py-2"
       >
         <h5>Task</h5>
+        <div>
+          Sort by:
+          <select @change="sortBy($event)" v-model="sort">
+            <option value="asc"> Ascending </option>
+            <option value="desc"> Descendin </option>
+            </select>
+          </div>
         <div class="d-flex align-items-center">
-
-
-  <div class="dropdown">
-  <select v-model="category">
-  <option value="Marketing">Marketing</option>
-  <option value="Research">Research</option>
-  <option value="Development">Product Development</option>
-</select>
-</div>
-         <!--  <b-dropdown id="dropdown-1" text="Category" class="m-md-2">
+          <button class="btn btn-outline-primary py-1 px-3 me-4" @click="shuffle">
+          Shuffle!
+</button>
+          <div class="dropdown">
+            <select v-model="category">
+              <option value="Marketing">Marketing</option>
+              <option value="Research">Research</option>
+              <option value="Development">Product Development</option>
+            </select>
+          </div>
+          <!--  <b-dropdown id="dropdown-1" text="Category" class="m-md-2">
     <b-dropdown-item
     v-for="(item,i) in resultCategory"
     :key="i"
@@ -25,8 +33,12 @@
 </div>
 -->
           &nbsp;&nbsp;
-          <input type="text" class="form-control" placeholder="Search"
-v-model="searchQuery">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search"
+            v-model="searchQuery"
+          />
           <span class="me-2">View </span>
           <button
             class="btn btn-outline-secondary py-1 px-3"
@@ -37,10 +49,16 @@ v-model="searchQuery">
         </div>
       </div>
       <div class="list-task row">
-        <CardItem v-for="(task, i) in resultQuery" :key="i" :task="task" :isGrid="isGrid" :ok="ok" />
-
+        <transition-group name="tasks" tag="div" class="list-task row">
+        <CardItem
+         v-for="task in resultQuery"
+          :key="task.id"
+          :task="task"
+          :isGrid="isGrid"
+          :ok="ok"
+        />
+        </transition-group>
       </div>
-
 
       <div class="action py-2">
         <a
@@ -76,29 +94,25 @@ v-model="searchQuery">
           </div>
         </div>
       </div>
-      <br>
-      <br>
+      <br />
+      <br />
       <div v-if="ok == true">
-      <button @click="ok =!ok"> Hide All Hidden </button>
+        <button @click="ok = !ok">Hide All Hidden</button>
       </div>
       <div v-if="ok == false">
-      <button @click="ok =!ok"> Show All Hidden </button>
+        <button @click="ok = !ok">Show All Hidden</button>
       </div>
       <p id="demo"></p>
-
     </div>
   </div>
 </template>
 <script>
-
-
-
-import CardItem from "~/components/Card/CardItem.vue"
+import CardItem from "~/components/Card/CardItem.vue";
 
 export default {
   components: {
-CardItem
-},
+    CardItem,
+  },
 
   data() {
     return {
@@ -106,92 +120,76 @@ CardItem
 
       task: [
         {
+          id:1,
           title: "Validasi Masalah",
           category: "Research",
-          description: "Lakukan validasi masalah kepada target user minimal 30 untuk kategori B2C dan 5 untuk kategori B2B.",
+          description:
+            "Lakukan validasi masalah kepada target user minimal 30 untuk kategori B2C dan 5 untuk kategori B2B.",
           isDone: false,
         },
         {
+          id:2,
           title: "Membuat MVP",
           category: "Product Development",
           description: "Buat MVP sederhana berdasarkan permasalahan user",
           isDone: false,
         },
         {
+          id:3,
           title: "Testing MVP",
           category: "Research",
-          description: "Lakukan pengujian MVP kepada user dan minta feedback mereka.",
+          description:
+            "Lakukan pengujian MVP kepada user dan minta feedback mereka.",
           isDone: false,
         },
       ],
-      searchQuery: '',
+      searchQuery: "",
       category: "",
       isCreating: false,
       isGrid: false,
-
-
     };
   },
 
-  methods: {
-    PilihKategori: function() {
-  let x = document.getElementById("mySelect").value;
-  let katAll = false;
-      let katProyek = false;
-      let katResearch = false;
-if (x == "All") {
-  katAll=true;
-  katProyek=true;
-  katResearch=true;
-} else if (x == "Research" ) {
-  katAll=false;
-  katProyek=false;
-  katResearch=true;
-} else if (x == "Development" ) {
- katAll=false;
-  katProyek=true;
-  katResearch=false;
-}
-  document.getElementById("demo").innerHTML = "You selected: " + x + katAll +katProyek +katResearch;
-    }
-
-
-
-},
 
   computed: {
+    resultQuery() {
+      if (this.category) {
+        return this.task.filter((item) => {
+          return this.category
+            .toLowerCase()
+            .split(" ")
+            .every((v) => item.category.toLowerCase().includes(v));
+        });
+      } else {
+        console.log(this.task);
+        return this.task;
+      }
+    },
 
- resultQuery() {
-if (this.category) {
-return this.task.filter((item) => {
-return this.category
-.toLowerCase()
-.split(" ")
-.every((v) => item.category.toLowerCase().includes(v));
-});
-}
+    resultCategory() {
+      let a = this.task
+        .map((item) => item.category)
+        .filter((value, index, self) => self.indexOf(value) === index);
+      console.log(a);
+      return a;
+    },
+  },
 
-else {
-console.log(this.task);
-return this.task
-}
-
+  methods: {
+shuffle() {
+this.task = _.shuffle(this.task)
+},
+sortBy(event) {
+this.task =_.orderBy(this.task,["title"],[event.target.value]);
 
 },
-
-resultCategory() {
- let a = this.task
- .map((item) => item.category)
- .filter((value,index,self) => self.indexOf(value) === index);
- console.log(a);
- return a;
 },
-},
-
-method: {},
 };
 </script>
 <style>
+#app .tasks-move {
+transition: .4s;
+}
 .red {
   color: blue;
 }

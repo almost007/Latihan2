@@ -1,3 +1,5 @@
+import webpack from "webpack";
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -10,22 +12,20 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href:"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"}
+      { rel: 'stylesheet', href:"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"}
     ],
     script: [
-      {src: "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      {src: "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"}
 
-    }
     ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ["~assets/css/main.css"
-  ],
+  css: ["~assets/css/main.css"]
+  ,
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/axios.js'
-  ],
+ 
 
 
 
@@ -44,7 +44,6 @@ export default {
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
-    
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -71,5 +70,11 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    plugins: [new webpack.ProvidePlugin({
+      // global modules
+      _: 'lodash'
+      })
+    ],
+
   }
 }
